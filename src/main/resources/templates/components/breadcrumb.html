@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <nav th:fragment="breadcrumb(rutas)">
+        <ul style="list-style:none; display:flex; gap:8px;">
+            <li th:each="ruta, i : ${rutas}">
+                <span th:if="${!i.last}">
+                    <a th:href="${ruta.url}" th:text="${ruta.nombre}"></a> >
+                </span>
+                <span th:if="${i.last}" th:text="${ruta.nombre}"></span>
+            </li>
+        </ul>
+    </nav>
+</body>
+
+</html>

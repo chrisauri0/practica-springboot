@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <nav th:fragment="navbar" class="w-full bg-blue-600 p-4 flex justify-center space-x-8 shadow-md mb-8">
+
+        <a class="text-white font-semibold hover:text-blue-200 transition" th:href="@{/}">
+            Inicio
+        </a>
+
+        <!-- Contenedor del dropdown -->
+        <div class="relative group">
+
+            <!-- Botón -->
+            <div class="text-white font-semibold hover:text-blue-200 transition flex items-center gap-1 cursor-pointer">
+                Segundo
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+
+            <!-- Submenu -->
+            <div
+                class="absolute left-0 top-full hidden group-hover:block bg-white rounded shadow-md min-w-[180px] z-50">
+
+                <a th:href="@{/segundo}" class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
+                    Página Segundo
+                </a>
+
+                <a th:href="@{/sitemap}" class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
+                    Sitemap
+                </a>
+
+            </div>
+        </div>
+
+        <a class="text-white font-semibold hover:text-blue-200 transition" th:href="@{/quienes}">Quienes somos</a>
+
+        <div class="relative group">
+
+            <div class="text-white font-semibold hover:text-blue-200 transition flex items-center gap-1 cursor-pointer">
+                Oferta Educativa
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+
+                <!-- submenu de oferta educativa -->
+                <div
+                    class="absolute left-0 top-full hidden group-hover:block bg-white rounded shadow-md min-w-[180px] z-50">
+                    <a th:href="@{/oferta-educativa}" class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
+                        Ver Oferta Educativa
+                    </a>
+                    <a th:href="@{/oferta-educativa/form}" class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
+                        Crear Oferta Educativa
+                    </a>
+                </div>>
+
+            </div>
+
+        </div>
+
+
+    </nav>
+
+</body>
+
+</html>

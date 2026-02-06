@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-start">
+    <div th:replace="components/navbar :: navbar"></div>
+    <div th:replace="components/breadcrumb :: breadcrumb(${rutas})"></div>
+
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold mb-6">Oferta Educativa</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <div th:each="oferta : ${ofertas}" class="bg-white rounded-lg shadow-md overflow-hidden">
+                <span th:text="${oferta.id}"></span>
+                <img th:src="@{${oferta.imagen}}" alt="Imagen de la oferta" class="w-24 h-24 object-cover">
+                <p th:text="${oferta.imagen}"></p>
+                <div class="p-4">
+                    <h2 class="text-xl font-semibold mb-2" th:text="${oferta.nombreOferta}">Nombre de la Oferta</h2>
+                    <p class="text-gray-600" th:text="${oferta.modalidad}">Modalidad</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

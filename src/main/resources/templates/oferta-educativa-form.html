@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-start">
+    <div th:replace="components/navbar :: navbar"></div>
+    <div th:replace="components/breadcrumb :: breadcrumb(${rutas})"></div>
+
+
+    <div>
+        <form th:action="@{/oferta-educativa/crear}" method="post" th:object="${ofertaEducativa}"
+            class="bg-white p-6 rounded-lg shadow-md flex flex-col space-y-4 ">
+
+            <label for="ofertaId" class="block mb-2 text-sm font-medium text-gray-700">ID de la Oferta
+                Educativa:</label>
+            <input type="text" id="id" th:field="*{id}"
+                class="border border-gray-300 rounded-md p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Ingrese el ID de la oferta educativa">
+            <label for="nombreOferta" class="block mb-2 text-sm font-medium text-gray-700">Nombre de la Oferta
+                Educativa:</label>
+            <input type="text" id="nombreOferta" th:field="*{nombreOferta}"
+                class="border border-gray-300 rounded-md p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Ingrese el nombre de la oferta educativa">
+
+            <label for="modalidad">
+                <input type="text" id="modalidad" th:field="*{modalidad}"
+                    class="border border-gray-300 rounded-md p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ingrese la modalidad">
+            </label>
+            <label for="imagen">
+                <input type="text" id="imagen" th:field="*{imagen}"
+                    class="border border-gray-300 rounded-md p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ingrese la URL de la imagen">
+            </label>
+
+
+
+            <button type="submit"
+                class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Crear</button>
+
+        </form>
+    </div>
+</body>
+
+</html>
