@@ -1,52 +1,208 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<script src="https://cdn.tailwindcss.com"></script>
-
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Oferta Educativa CRUD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-start">
     <div th:replace="components/navbar :: navbar"></div>
     <div th:replace="components/breadcrumb :: breadcrumb(${rutas})"></div>
 
-
-    <div>
-        <form th:action="@{/oferta-educativa/crear}" method="post" th:object="${ofertaEducativa}"
-            class="bg-white p-6 rounded-lg shadow-md flex flex-col space-y-4 ">
-
-            <label for="ofertaId" class="block mb-2 text-sm font-medium text-gray-700">ID de la Oferta
-                Educativa:</label>
-            <input type="text" id="id" th:field="*{id}"
-                class="border border-gray-300 rounded-md p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Ingrese el ID de la oferta educativa">
-            <label for="nombreOferta" class="block mb-2 text-sm font-medium text-gray-700">Nombre de la Oferta
-                Educativa:</label>
-            <input type="text" id="nombreOferta" th:field="*{nombreOferta}"
-                class="border border-gray-300 rounded-md p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Ingrese el nombre de la oferta educativa">
-
-            <label for="modalidad">
-                <input type="text" id="modalidad" th:field="*{modalidad}"
-                    class="border border-gray-300 rounded-md p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Ingrese la modalidad">
-            </label>
-            <label for="imagen">
-                <input type="text" id="imagen" th:field="*{imagen}"
-                    class="border border-gray-300 rounded-md p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Ingrese la URL de la imagen">
-            </label>
-
-
-
-            <button type="submit"
-                class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Crear</button>
-
-        </form>
+    <!-- Botón para mostrar modal de crear -->
+    <div class="flex flex-col sm:flex-row sm:space-x-4 mt-8 w-full max-w-3xl px-2">
+        <button onclick="openCreateForm()"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full sm:w-auto">Crear
+            Oferta</button>
     </div>
+
+    <!-- Modal Formulario Crear/Editar -->
+    <div id="formModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md relative mx-2">
+            <button onclick="hideFormModal()"
+                class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+            <form th:action="@{${formAction}}" method="post" th:object="${ofertaEducativa}"
+                class="flex flex-col space-y-4">
+                <input type="hidden" th:field="*{id}" />
+                <label for="nombreOferta" class="block mb-2 text-sm font-medium text-gray-700">Nombre de la Oferta
+                    Educativa:</label>
+                <input type="text" id="nombreOferta" th:field="*{nombreOferta}"
+                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ingrese el nombre de la oferta educativa">
+
+                <label for="modalidad" class="block mb-2 text-sm font-medium text-gray-700">Modalidad:</label>
+                <input type="text" id="modalidad" th:field="*{modalidad}"
+                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ingrese la modalidad">
+
+                <label for="division" class="block mb-2 text-sm font-medium text-gray-700">División:</label>
+                <select id="division" th:field="*{division}"
+                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="" disabled>Seleccione una división</option>
+                    <option th:each="division : ${divisiones}" th:value="${division.id}" th:text="${division.nombre}">
+                    </option>
+                </select>
+
+                <label for="imagen" class="block mb-2 text-sm font-medium text-gray-700">URL de la Imagen:</label>
+                <input type="text" id="imagen" th:field="*{imagen}"
+                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ingrese la URL de la imagen">
+
+                <button type="button" id="ofertaBtn"
+                    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full sm:w-auto"
+                    th:text="${ofertaEducativa.id} != null ? 'Actualizar' : 'Crear'">Crear</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de Ofertas Educativas (siempre visible) -->
+    <div class="w-full max-w-3xl mt-8 px-2">
+        <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+            <h2 class="text-xl font-bold mb-4">Lista de Ofertas Educativas</h2>
+            <div class="w-full">
+                <table class="min-w-full divide-y divide-gray-200 text-xs sm:text-sm">
+                    <thead>
+                        <tr>
+                            <th class="px-2 sm:px-4 py-2">ID</th>
+                            <th class="px-2 sm:px-4 py-2">Nombre</th>
+                            <th class="px-2 sm:px-4 py-2">Modalidad</th>
+                            <th class="px-2 sm:px-4 py-2">División</th>
+                            <th class="px-2 sm:px-4 py-2">Imagen</th>
+                            <th class="px-2 sm:px-4 py-2">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="oferta, iterStat : ${ofertas}">
+                            <td class="border px-2 sm:px-4 py-2" th:text="${oferta.id}"></td>
+                            <td class="border px-2 sm:px-4 py-2" th:text="${oferta.nombreOferta}"></td>
+                            <td class="border px-2 sm:px-4 py-2" th:text="${oferta.modalidad}"></td>
+                            <td class="border px-2 sm:px-4 py-2">
+                                <span th:if="${oferta.division != null}" th:text="${oferta.division.nombre}"></span>
+                                <span th:if="${oferta.division == null}" th:text="'Sin división'"></span>
+                            </td>
+                            <td class="border px-2 sm:px-4 py-2">
+                                <img th:src="${oferta.imagen}" alt="Imagen"
+                                    class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded mx-auto" />
+                            </td>
+                            <td
+                                class="border px-2 sm:px-4 py-2 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 items-center justify-center">
+                                <button type="button"
+                                    class="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded w-full sm:w-auto"
+                                    th:attr="onclick='openEditForm(' + '\'' + ${oferta.id} + '\',\'' + ${oferta.nombreOferta} + '\',\'' + ${oferta.modalidad} + '\',\'' + (${oferta.division != null ? oferta.division.id : ''}) + '\',\'' + ${oferta.imagen} + '\')'">Editar</button>
+                                <form th:action="@{'/consola/oferta-educativa/eliminar/' + ${oferta.id}}" method="post"
+                                    th:onsubmit="return confirm('¿Seguro que desea eliminar esta oferta?');"
+                                    class="w-full sm:w-auto">
+                                    <button type="submit"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded w-full sm:w-auto">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+        function showFormModal() {
+            document.getElementById('formModal').classList.remove('hidden');
+        }
+        function hideFormModal() {
+            document.getElementById('formModal').classList.add('hidden');
+        }
+        function openCreateForm() {
+            // Limpiar el formulario
+            document.querySelector('#formModal input[name="id"]').value = '';
+            document.querySelector('#formModal input[name="nombreOferta"]').value = '';
+            document.querySelector('#formModal input[name="modalidad"]').value = '';
+            document.querySelector('#formModal select[name="division"]').value = '';
+            document.querySelector('#formModal input[name="imagen"]').value = '';
+            showFormModal();
+        }
+        function openEditForm(id, nombreOferta, modalidad, divisionId, imagen) {
+            // Llenar el formulario con los datos de la oferta seleccionada
+            document.querySelector('#formModal input[name="id"]').value = id;
+            document.querySelector('#formModal input[name="nombreOferta"]').value = nombreOferta;
+            document.querySelector('#formModal input[name="modalidad"]').value = modalidad;
+            document.querySelector('#formModal select[name="division"]').value = divisionId;
+            document.querySelector('#formModal input[name="imagen"]').value = imagen;
+            showFormModal();
+        }
+
+        function actualizarOferta() {
+            const id = document.querySelector('#formModal input[name="id"]').value;
+            const nombreOferta = document.querySelector('#formModal input[name="nombreOferta"]').value;
+            const modalidad = document.querySelector('#formModal input[name="modalidad"]').value;
+            const divisionId = document.querySelector('#formModal select[name="division"]').value;
+            const imagen = document.querySelector('#formModal input[name="imagen"]').value;
+            fetch('/consola/oferta-educativa/editar-temporal/' + id, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `nombreOferta=${encodeURIComponent(nombreOferta)}&modalidad=${encodeURIComponent(modalidad)}&division.id=${encodeURIComponent(divisionId)}&imagen=${encodeURIComponent(imagen)}`
+            })
+                .then(response => response.text())
+                .then(html => {
+                    // Actualizar toda la tabla
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newTable = doc.querySelector('table');
+                    const oldTable = document.querySelector('table');
+                    if (newTable && oldTable) {
+                        oldTable.parentNode.replaceChild(newTable, oldTable);
+                    }
+                    hideFormModal();
+                })
+                .catch(err => {
+                    alert('Error al editar oferta educativa');
+                });
+        }
+
+        function crearOfertaEducativa() {
+            const nombreOferta = document.querySelector('#formModal input[name="nombreOferta"]').value;
+            const modalidad = document.querySelector('#formModal input[name="modalidad"]').value;
+            const divisionId = document.querySelector('#formModal select[name="division"]').value;
+            const imagen = document.querySelector('#formModal input[name="imagen"]').value;
+            fetch('/consola/oferta-educativa/crear', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `nombreOferta=${encodeURIComponent(nombreOferta)}&modalidad=${encodeURIComponent(modalidad)}&division.id=${encodeURIComponent(divisionId)}&imagen=${encodeURIComponent(imagen)}`
+            })
+                .then(response => response.text())
+                .then(html => {
+                    // Actualizar toda la tabla
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newTable = doc.querySelector('table');
+                    const oldTable = document.querySelector('table');
+                    if (newTable && oldTable) {
+                        oldTable.parentNode.replaceChild(newTable, oldTable);
+                    }
+                    hideFormModal();
+                })
+                .catch(err => {
+                    alert('Error al crear oferta educativa');
+                });
+        }
+
+        // Cambiar el onclick del botón según si es crear o editar
+        document.getElementById('ofertaBtn').onclick = function () {
+            const id = document.querySelector('#formModal input[name="id"]').value;
+            if (id) {
+                actualizarOferta();
+            } else {
+                crearOfertaEducativa();
+            }
+        };
+    </script>
 </body>
 
 </html>

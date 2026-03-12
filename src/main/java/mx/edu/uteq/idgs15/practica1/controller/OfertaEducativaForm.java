@@ -14,18 +14,5 @@ import java.util.ArrayList;
 
 @Controller
 public class OfertaEducativaForm {
-    List<OfertaEducativa> ofertas = new ArrayList<>();
-
-    @GetMapping("/oferta-educativa/form")
-    public String getOfertaEducativaForm(Model model) {
-        List<Map<String, String>> rutas = List.of(
-                Map.of("nombre", "Home", "url", "/"),
-                Map.of("nombre", "Oferta Educativa", "url", "/oferta-educativa-form"),
-                Map.of("nombre", "Formulario", "url", "/oferta-educativa/form"));
-        model.addAttribute("rutas", rutas);
-        model.addAttribute("ofertas", ofertas);
-        model.addAttribute("ofertaEducativa", new OfertaEducativa());
-        return "oferta-educativa-form";
-    }
 
 }

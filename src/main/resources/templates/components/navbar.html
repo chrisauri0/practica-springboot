@@ -56,14 +56,37 @@
                     <a th:href="@{/oferta-educativa}" class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
                         Ver Oferta Educativa
                     </a>
-                    <a th:href="@{/oferta-educativa/form}" class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
+                    <a th:href="@{/consola/oferta-educativa/form}"
+                        class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
                         Crear Oferta Educativa
                     </a>
-                </div>>
+                </div>
 
             </div>
 
         </div>
+
+        <div class="relative group">
+
+            <div class="text-white font-semibold hover:text-blue-200 transition flex items-center gap-1 cursor-pointer">
+                Consola
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+
+                <!-- submenu de consola -->
+                <div
+                    class="absolute left-0 top-full hidden group-hover:block bg-white rounded shadow-md min-w-[180px] z-50">
+                    <a th:href="@{/consola/division/form}" class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
+                        Divisiones
+                    </a>
+                    <a th:href="@{/consola/oferta-educativa/form}"
+                        class="block px-4 py-2 hover:bg-blue-100 text-gray-700">
+                        Ofertas Educativas
+                    </a>
+                </div>
+
+            </div>
 
 
     </nav>

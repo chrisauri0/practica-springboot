@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crud de Division</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-start">
+
+    <div th:replace="components/navbar :: navbar"></div>
+    <div th:replace="components/breadcrumb :: breadcrumb(${rutas})"></div>
+
+    <!-- Botón para mostrar modal de crear -->
+    <div class="flex space-x-4 mt-8">
+        <button onclick="openCreateForm()"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Crear División</button>
+    </div>
+
+    <!-- Modal Formulario Crear/Editar -->
+    <div id="formModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md relative">
+            <button onclick="hideFormModal()"
+                class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+            <form th:action="${formAction}" method="post" th:object="${division}" class="flex flex-col space-y-4"
+                id="divisionForm">
+                <input type="hidden" th:field="*{id}" name="id" />
+                <label for="nombreDivision" class="block mb-2 text-sm font-medium text-gray-700">Nombre de la
+                    División:</label>
+                <input type="text" id="nombreDivision" th:field="*{nombre}" name="nombre"
+                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ingrese el nombre de la división">
+                <span id="nombreError" class="text-red-500 text-xs hidden">Este campo es obligatorio</span>
+
+                <label for="clave" class="block mb-2 text-sm font-medium text-gray-700">Clave:</label>
+                <input type="text" id="clave" th:field="*{clave}" name="clave"
+                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ingrese la clave de la división">
+                <span id="claveError" class="text-red-500 text-xs hidden">Este campo es obligatorio</span>
+
+                <label for="activo" class="block mb-2 text-sm font-medium text-gray-700">Activo:</label>
+                <input type="checkbox" id="activo" th:field="*{activo}" name="activo"
+                    class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                <button type="submit"
+                    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+                    th:text="${division.id} != null ? 'Actualizar' : 'Crear'">Crear</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de Divisiones -->
+    <div class="w-full max-w-3xl mt-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-bold mb-4">Lista de Divisiones</h2>
+            <!-- El botón de crear ya está arriba -->
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">ID</th>
+                        <th class="px-4 py-2">Nombre</th>
+                        <th class="px-4 py-2">Clave</th>
+                        <th class="px-4 py-2">Activo</th>
+                        <th class="px-4 py-2">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${divisiones.empty}">
+                        <td>No hay divisiones</td>
+                    </tr>
+                    <tr th:each="division, iterStat : ${divisiones}">
+                        <td class="border px-4 py-2" th:text="${division.id}"></td>
+                        <td class="border px-4 py-2" th:text="${division.nombre}"></td>
+                        <td class="border px-4 py-2" th:text="${division.clave}"></td>
+                        <td class="border px-4 py-2" th:text="${division.activo}"></td>
+                        <td class="border px-4 py-2 flex space-x-2">
+                            <button type="button" class="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded"
+                                th:attr="onclick='openEditForm(' + '\'' + ${division.id} + '\',\'' + ${division.nombre} + '\',\'' + ${division.clave} + '\',\'' + ${division.activo} + '\')'">Editar</button>
+                            <form th:action="@{'/consola/division/eliminar/' + ${division.id}}" method="post"
+                                th:onsubmit="return confirm('¿Seguro que desea eliminar esta división?');">
+                                <button type="submit"
+                                    class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function showFormModal() {
+            document.getElementById('formModal').classList.remove('hidden');
+        }
+        function hideFormModal() {
+            document.getElementById('formModal').classList.add('hidden');
+        }
+        function openCreateForm() {
+            document.querySelector('#formModal input[name="id"]').value = '';
+            document.querySelector('#formModal input[name="nombre"]').value = '';
+            document.querySelector('#formModal input[name="clave"]').value = '';
+            document.querySelector('#formModal input[name="activo"]').checked = false;
+            clearErrors();
+            showFormModal();
+        }
+        function openEditForm(id, nombre, clave, activo) {
+            document.querySelector('#formModal input[name="id"]').value = id;
+            document.querySelector('#formModal input[name="nombre"]').value = nombre;
+            document.querySelector('#formModal input[name="clave"]').value = clave;
+            document.querySelector('#formModal input[name="activo"]').checked = (activo === 'true' || activo === true);
+            clearErrors();
+            showFormModal();
+        }
+
+        // Validación frontend
+        document.getElementById('divisionForm').addEventListener('submit', function (event) {
+            let valid = true;
+            const nombreInput = document.getElementById('nombreDivision');
+            const claveInput = document.getElementById('clave');
+            const nombreError = document.getElementById('nombreError');
+            const claveError = document.getElementById('claveError');
+
+            // Validar nombre
+            if (!nombreInput.value.trim()) {
+                nombreInput.classList.add('border-red-500');
+                nombreError.classList.remove('hidden');
+                valid = false;
+            } else {
+                nombreInput.classList.remove('border-red-500');
+                nombreError.classList.add('hidden');
+            }
+
+            // Validar clave
+            if (!claveInput.value.trim()) {
+                claveInput.classList.add('border-red-500');
+                claveError.classList.remove('hidden');
+                valid = false;
+            } else {
+                claveInput.classList.remove('border-red-500');
+                claveError.classList.add('hidden');
+            }
+
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+
+        function clearErrors() {
+            document.getElementById('nombreDivision').classList.remove('border-red-500');
+            document.getElementById('clave').classList.remove('border-red-500');
+            document.getElementById('nombreError').classList.add('hidden');
+            document.getElementById('claveError').classList.add('hidden');
+        }
+
+        function actualizarDivision() {
+            const id = document.querySelector('#formModal input[name="id"]').value;
+            const nombre = document.querySelector('#formModal input[name="nombre"]').value;
+            const clave = document.querySelector('#formModal input[name="clave"]').value;
+            const activo = document.querySelector('#formModal input[name="activo"]').checked;
+
+            fetch('/consola/division/editar-temporal/' + id, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `nombre=${encodeURIComponent(nombre)}&clave=${encodeURIComponent(clave)}&activo=${activo}`
+            })
+                .then(response => response.text())
+                .then(html => {
+                    // Actualizar toda la tabla
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newTable = doc.querySelector('table');
+                    const oldTable = document.querySelector('table');
+                    if (newTable && oldTable) {
+                        oldTable.parentNode.replaceChild(newTable, oldTable);
+                    }
+                    hideFormModal();
+                })
+                .catch(err => {
+                    alert('Error al editar división');
+                });
+        }
+
+        // Cambiar el submit por onclick para editar
+        const divisionForm = document.getElementById('divisionForm');
+        divisionForm.addEventListener('submit', function (event) {
+            const id = document.querySelector('#formModal input[name="id"]').value;
+            if (id) {
+                event.preventDefault();
+                actualizarDivision();
+            }
+        });
+    </script>
+</body>
+
+</html>

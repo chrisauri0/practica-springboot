@@ -3,11 +3,16 @@ package mx.edu.uteq.idgs15.practica1.model;
 import lombok.Data;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotEmpty;
+
+import org.hibernate.annotations.ManyToAny;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.ManyToOne;
 
 @Data
 @Entity
@@ -23,7 +28,11 @@ public class OfertaEducativa {
     @Size(min = 10, max = 500)
     private String imagen;
     @OneToOne
-    private PerfilEgreso perfilEgreso;
+    private PerfilDeIngreso perfilEgreso;
+
+    @ManyToOne
+    @JoinColumn(name = "id_division")
+    private Division division;
 
     public Long getId() {
         return id;
@@ -57,11 +66,11 @@ public class OfertaEducativa {
         this.imagen = imagen;
     }
 
-    public PerfilEgreso getPerfilEgreso() {
+    public PerfilDeIngreso getPerfilEgreso() {
         return perfilEgreso;
     }
 
-    public void setPerfilEgreso(PerfilEgreso perfilEgreso) {
+    public void setPerfilEgreso(PerfilDeIngreso perfilEgreso) {
         this.perfilEgreso = perfilEgreso;
     }
 

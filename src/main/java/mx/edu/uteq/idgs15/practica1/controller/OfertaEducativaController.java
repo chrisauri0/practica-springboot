@@ -1,206 +1,163 @@
 package mx.edu.uteq.idgs15.practica1.controller;
 
-import java.util.List;
-import java.util.Map;
-
+import mx.edu.uteq.idgs15.practica1.model.Division;
 import mx.edu.uteq.idgs15.practica1.model.OfertaEducativa;
-import mx.edu.uteq.idgs15.practica1.model.PerfilEgreso;
 
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import mx.edu.uteq.idgs15.practica1.repository.DivisionesRepository;
+import mx.edu.uteq.idgs15.practica1.repository.OfertaEducativaRepository;
 import jakarta.validation.Valid;
 
+import java.util.List;
 import org.springframework.ui.Model;
-import java.util.ArrayList;
 import org.springframework.validation.Errors;
+import java.util.Map;
 
 @Controller
 public class OfertaEducativaController {
+
         List<OfertaEducativa> ofertas = new ArrayList<>();
 
-        @GetMapping("/oferta-educativa")
-        public String getOfertaEducativa(Model model) {
+        @Autowired
+        private OfertaEducativaRepository repo;
 
+        @Autowired
+        private DivisionesRepository repoDivision;
+
+        @GetMapping("/oferta-educativa")
+        public String listarOfertas(Model model) {
                 List<Map<String, String>> rutas = List.of(
                                 Map.of("nombre", "Home", "url", "/"),
-                                Map.of("nombre", "Oferta Educativa", "url", "/oferta-educativa"));
+                                Map.of("nombre", "Oferta Educativa", "url", "/consola/oferta-educativa"));
                 model.addAttribute("rutas", rutas);
+                model.addAttribute("ofertas", repo.findAll());
+                model.addAttribute("ofertaEducativa", new OfertaEducativa());
+                // Endpoint para editar oferta educativa temporalmente (solo en memoria, para
+                // DOM)
 
-                // if (ofertas.isEmpty()) {
-                // OfertaEducativa oferta1 = new OfertaEducativa();
-                // oferta1.setId("1");
-                // oferta1.setNombreOferta("Ingeniería Mecatrónica");
-                // oferta1.setModalidad("Modalidad intensiva y mixta");
-                // oferta1.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/ME.png");
-                // oferta1.setPerfilEgreso(new PerfilEgreso());
-
-                // ofertas.add(oferta1);
-
-                // OfertaEducativa oferta2 = new OfertaEducativa();
-                // oferta2.setId("2");
-                // oferta2.setNombreOferta("Ingeniería en Tecnologías de la Información e
-                // Innovación Digital");
-                // oferta2.setModalidad("");
-                // oferta2.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LTII.png");
-                // oferta2.setPerfilEgreso(new PerfilEgreso());
-
-                // ofertas.add(oferta2);
-
-                // OfertaEducativa oferta3 = new OfertaEducativa();
-                // oferta3.setId("3");
-                // oferta3.setNombreOferta("Ingeniería en Energía y Desarrollo Sostenible");
-                // oferta3.setModalidad("");
-                // oferta3.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIEDS2.png");
-                // oferta3.setPerfilEgreso(new PerfilEgreso());
-
-                // ofertas.add(oferta3);
-
-                // OfertaEducativa oferta4 = new OfertaEducativa();
-                // oferta4.setId("4");
-                // oferta4.setNombreOferta("Ingeniería Ambiental y Sustentabilidad");
-                // oferta4.setModalidad("");
-                // oferta4.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIAS.png");
-                // oferta4.setPerfilEgreso(new PerfilEgreso());
-
-                // ofertas.add(oferta4);
-
-                // OfertaEducativa oferta5 = new OfertaEducativa();
-                // oferta5.setId("5");
-                // oferta5.setNombreOferta("Agricultura Sustentable y Protegida");
-                // oferta5.setModalidad("");
-                // oferta5.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LA.png");
-                // oferta5.setPerfilEgreso(new PerfilEgreso());
-                // ofertas.add(oferta5);
-
-                // OfertaEducativa oferta6 = new OfertaEducativa();
-                // oferta6.setId("6");
-                // oferta6.setNombreOferta("Licenciatura en Administración");
-                // oferta6.setModalidad("");
-                // oferta6.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIL.png");
-                // oferta6.setPerfilEgreso(new PerfilEgreso());
-                // ofertas.add(oferta6);
-
-                // OfertaEducativa oferta7 = new OfertaEducativa();
-                // oferta7.setId("");
-                // oferta7.setNombreOferta("Licenciatura en Negocios y Mercadotecnia");
-                // oferta7.setModalidad("");
-                // oferta7.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/contaduria.png");
-                // oferta7.setPerfilEgreso(new PerfilEgreso());
-                // ofertas.add(oferta7);
-
-                // // OfertaEducativa oferta8 = new OfertaEducativa();
-                // // oferta8.setNombreOferta("Ingeniería en Logística");
-                // // oferta8.setModalidad("");
-                // //
-                // oferta8.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIMI.png");
-                // // ofertas.add(oferta8);
-
-                // // OfertaEducativa oferta9 = new OfertaEducativa();
-                // // oferta9.setNombreOferta("Licenciatura en Contaduría");
-                // // oferta9.setModalidad("Modalidad vespertina y mixta");
-                // //
-                // oferta9.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIN.png");
-                // // ofertas.add(oferta9);
-
-                // // OfertaEducativa oferta10 = new OfertaEducativa();
-                // // oferta10.setNombreOferta("Ingeniería en Mantenimiento Industrial");
-                // // oferta10.setModalidad("");
-                // //
-                // oferta10.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LII.png");
-                // // ofertas.add(oferta10);
-
-                // // OfertaEducativa oferta11 = new OfertaEducativa();
-                // // oferta11.setNombreOferta("Ingeniería en Nanotecnología");
-                // // oferta11.setModalidad("");
-                // //
-                // oferta11.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/semiconductores.png");
-                // // ofertas.add(oferta11);
-
-                // // OfertaEducativa oferta12 = new OfertaEducativa();
-                // // oferta12.setNombreOferta("Ingeniería Industrial");
-                // // oferta12.setModalidad("");
-                // //
-                // oferta12.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIM.png");
-                // // ofertas.add(oferta12);
-
-                // // OfertaEducativa oferta13 = new OfertaEducativa();
-                // // oferta13.setNombreOferta("Ingeniería Mecánica");
-                // // oferta13.setModalidad("");
-                // //
-                // oferta13.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIM.png");
-                // // ofertas.add(oferta13);
-
-                // // OfertaEducativa oferta14 = new OfertaEducativa();
-                // // oferta14.setNombreOferta("Ingeniería Mecánica Automotríz");
-                // // oferta14.setModalidad("");
-                // //
-                // oferta14.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIM.png");
-                // // ofertas.add(oferta14);
-
-                // // OfertaEducativa oferta15 = new OfertaEducativa();
-                // // oferta15.setNombreOferta("Ingeniería en Microelectrónica y
-                // Semiconductores");
-                // // oferta15.setModalidad("");
-                // //
-                // oferta15.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIM.png");
-                // // ofertas.add(oferta15);
-
-                // // OfertaEducativa oferta16 = new OfertaEducativa();
-                // // oferta16.setNombreOferta("Licenciatura en Educación en Enseñanza del
-                // Idioma
-                // // Inglés");
-                // // oferta16.setModalidad("");
-                // //
-                // oferta16.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/LIM.png");
-                // // ofertas.add(oferta16);
-
-                // // OfertaEducativa oferta17 = new OfertaEducativa();
-                // // oferta17.setNombreOferta(
-                // // "Maestría en Ingeniería para la Manufactura Inteligente en Competencias
-                // // Profesionales");
-                // // oferta17.setModalidad("");
-                // //
-                // oferta17.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/MIMI.png");
-                // // ofertas.add(oferta17);
-
-                // // OfertaEducativa oferta18 = new OfertaEducativa();
-                // // oferta18.setNombreOferta(
-                // // "Maestría en Dirección Logística y Cadena de Suministro Sostenible en
-                // // Competencias Profesionales");
-                // // oferta18.setModalidad("");
-                // //
-                // oferta18.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/MDICSG.png");
-                // // ofertas.add(oferta18);
-
-                // // OfertaEducativa oferta19 = new OfertaEducativa();
-                // // oferta19.setNombreOferta("Maestría en Economía Circular");
-                // // oferta19.setModalidad("");
-                // //
-                // oferta19.setImagen("https://www.uteq.edu.mx/Images/OfertaEducativa/MEC.png");
-                // // ofertas.add(oferta19);
-
-                // }
-
-                // else {
-                // System.out.println("La lista de ofertas educativas está vacía.");
-
-                // }
-
-                model.addAttribute("ofertas", ofertas);
                 return "oferta-educativa";
-
         }
 
-        @PostMapping("/oferta-educativa/crear")
+        @GetMapping("/consola/oferta-educativa/form")
+        public String listarOfertasForm(Model model) {
+                List<Map<String, String>> rutas = List.of(
+                                Map.of("nombre", "Home", "url", "/"),
+                                Map.of("nombre", "Oferta Educativa", "url", "/consola/oferta-educativa"),
+                                Map.of("nombre", "Crud", "url", "/consola/oferta-educativa/form"));
+                model.addAttribute("rutas", rutas);
+                model.addAttribute("ofertas", repo.findAll());
+                model.addAttribute("divisiones", repoDivision.findAll());
+                model.addAttribute("ofertaEducativa", new OfertaEducativa());
+                model.addAttribute("formAction", "/consola/oferta-educativa/crear");
+                return "oferta-educativa-form";
+        }
+
+        @PostMapping("/consola/oferta-educativa/form")
         public String crearOfertaEducativa(@Valid OfertaEducativa ofertaEducativa, Model model, Errors errors) {
                 if (errors.hasErrors()) {
-                        model.addAttribute("ofertas", ofertas);
-                        return "oferta-educativa";
+                        model.addAttribute("ofertas", repo.findAll());
+                        model.addAttribute("divisiones", repoDivision.findAll());
+                        return "oferta-educativa-form";
                 }
-
-                ofertas.add(ofertaEducativa);
-                return "redirect:/oferta-educativa";
+                repo.save(ofertaEducativa);
+                return "redirect:/consola/oferta-educativa-form";
         }
+
+        @PostMapping("/consola/oferta-educativa/crear")
+        public String crearOfertaEducativa2(@Valid OfertaEducativa ofertaEducativa, Model model, Errors errors) {
+                if (errors.hasErrors()) {
+                        model.addAttribute("ofertas", repo.findAll());
+                        model.addAttribute("divisiones", repoDivision.findAll());
+                        return "oferta-educativa-form";
+                }
+                repo.save(ofertaEducativa);
+                return "redirect:/consola/oferta-educativa/form";
+        }
+
+        @GetMapping("/consola/oferta-educativa/editar/{id}")
+        public String mostrarEditarOferta(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+                OfertaEducativa oferta = repo.findById(id).orElse(null);
+                List<Map<String, String>> rutas = List.of(
+                                Map.of("nombre", "Home", "url", "/"),
+                                Map.of("nombre", "Oferta Educativa", "url", "/consola/oferta-educativa"),
+                                Map.of("nombre", "Editar", "url", "/consola/oferta-educativa/editar/" + id));
+                model.addAttribute("rutas", rutas);
+                model.addAttribute("ofertas", repo.findAll());
+                model.addAttribute("ofertaEducativa", oferta);
+                model.addAttribute("divisiones", repoDivision.findAll());
+                model.addAttribute("titulo", "Editar Oferta Educativa");
+                model.addAttribute("formAction", "/consola/oferta-educativa/editar/" + id);
+                return "oferta-educativa-form";
+        }
+
+        @PostMapping("/consola/oferta-educativa/editar-temporal/{id}")
+        public String editarOfertaEducativaTemporal(@org.springframework.web.bind.annotation.PathVariable Long id,
+                        @Valid OfertaEducativa ofertaEducativa, Model model, Errors errors) {
+                if (errors.hasErrors()) {
+                        model.addAttribute("ofertas", repo.findAll());
+                        model.addAttribute("divisiones", repoDivision.findAll());
+                        return "oferta-educativa-form";
+                }
+                // Buscar la oferta en la lista temporal
+                OfertaEducativa original = null;
+                for (OfertaEducativa o : ofertas) {
+                        if (o.getId().equals(id)) {
+                                original = o;
+                                break;
+                        }
+                }
+                if (original != null) {
+                        original.setNombreOferta(ofertaEducativa.getNombreOferta());
+                        original.setModalidad(ofertaEducativa.getModalidad());
+                        original.setImagen(ofertaEducativa.getImagen());
+                        // Actualizar la división correctamente
+                        if (ofertaEducativa.getDivision() != null && ofertaEducativa.getDivision().getId() != null) {
+                                Division nuevaDivision = null;
+                                List<Division> divisiones = repoDivision.findAll();
+                                for (Division d : divisiones) {
+                                        if (d.getId().equals(ofertaEducativa.getDivision().getId())) {
+                                                nuevaDivision = d;
+                                                break;
+                                        }
+                                }
+                                original.setDivision(nuevaDivision);
+                        }
+                        // Guardar el cambio en la base de datos
+                        repo.save(original);
+                }
+                // Sincronizar la lista temporal con la base de datos
+                ofertas.clear();
+                ofertas.addAll(repo.findAll());
+                model.addAttribute("ofertas", ofertas);
+                model.addAttribute("divisiones", repoDivision.findAll());
+                return "oferta-educativa-form";
+        }
+
+        // @PostMapping("/consola/oferta-educativa/editar/{id}")
+        // public String
+        // editarOfertaEducativa(@org.springframework.web.bind.annotation.PathVariable
+        // Long id,
+        // @Valid OfertaEducativa ofertaEducativa, Model model, Errors errors) {
+        // if (errors.hasErrors()) {
+        // model.addAttribute("ofertas", repo.findAll());
+        // model.addAttribute("divisiones", repoDivision.findAll());
+        // return "oferta-educativa-form";
+        // }
+        // ofertaEducativa.setId(id);
+        // repo.save(ofertaEducativa);
+        // return "redirect:/consola/oferta-educativa-form";
+        // }
+
+        @PostMapping("/consola/oferta-educativa/eliminar/{id}")
+        public String eliminarOfertaEducativa(@org.springframework.web.bind.annotation.PathVariable Long id) {
+                repo.deleteById(id);
+                return "redirect:/consola/oferta-educativa-form";
+        }
+
 }

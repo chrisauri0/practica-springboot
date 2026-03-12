@@ -18,11 +18,15 @@
 
             <div th:each="oferta : ${ofertas}" class="bg-white rounded-lg shadow-md overflow-hidden">
                 <span th:text="${oferta.id}"></span>
-                <img th:src="@{${oferta.imagen}}" alt="Imagen de la oferta" class="w-24 h-24 object-cover">
-                <p th:text="${oferta.imagen}"></p>
+                <img th:src="${oferta.imagen}" alt="Imagen de la oferta" class="w-24 h-24 object-cover">
                 <div class="p-4">
                     <h2 class="text-xl font-semibold mb-2" th:text="${oferta.nombreOferta}">Nombre de la Oferta</h2>
                     <p class="text-gray-600" th:text="${oferta.modalidad}">Modalidad</p>
+                    <p class="text-gray-700 mt-2">
+                        <span th:if="${oferta.division != null}"
+                            th:text="'División: ' + ${oferta.division.nombre}"></span>
+                        <span th:if="${oferta.division == null}" th:text="'Sin división asignada'"></span>
+                    </p>
                 </div>
             </div>
         </div>
