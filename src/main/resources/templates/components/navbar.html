@@ -45,15 +45,18 @@
                 </button>
                 <div
                     class="absolute left-0 top-full hidden group-hover:block bg-white rounded shadow-lg min-w-[180px] z-50 mt-2">
-                    <a th:href="@{/oferta-educativa}" class="block px-5 py-2 hover:bg-blue-100 text-gray-700">Ver Oferta
-                        Educativa</a>
+                    <!-- Ver Oferta Educativa: visible para todos los autenticados -->
+                    <a th:href="@{/oferta-educativa}" class="block px-5 py-2 hover:bg-blue-100 text-gray-700"
+                        sec:authorize="isAuthenticated()">Ver Oferta Educativa</a>
+                    <!-- Crear Oferta Educativa: solo ADMIN -->
                     <a th:href="@{/consola/oferta-educativa/form}"
-                        class="block px-5 py-2 hover:bg-blue-100 text-gray-700">Crear Oferta Educativa</a>
+                        class="block px-5 py-2 hover:bg-blue-100 text-gray-700" sec:authorize="hasRole('ADMIN')">Crear
+                        Oferta Educativa</a>
                 </div>
             </div>
 
-            <!-- Dropdown Consola -->
-            <div class="relative group">
+            <!-- Dropdown Consola: solo ADMIN -->
+            <div class="relative group" sec:authorize="hasRole('ADMIN')">
                 <button
                     class="text-white font-semibold hover:text-blue-200 transition flex items-center gap-1 focus:outline-none">
                     Consola
@@ -69,6 +72,28 @@
                         class="block px-5 py-2 hover:bg-blue-100 text-gray-700">Ofertas Educativas</a>
                 </div>
             </div>
+
+            <!-- conoce la uteq -->
+            <div class="relative group">
+                <button class=" text-white font-semibold hover:text-blue-200 transition flex items-center gap-1
+                focus:outline-none">
+                    Conoce la UTEQ
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div
+                    class="absolute left-0 top-full hidden group-hover:block bg-white rounded shadow-lg min-w-[180px] z-50 mt-2">
+                    <a th:href="@{/consola/mision-vision-valores/form}"
+                        class="block px-5 py-2 hover:bg-blue-100 text-gray-700" sec:authorize="hasRole('ADMIN')">
+                        Crear misión, visión y valores
+                    </a>
+                    <a th:href="@{/mision-vision-valores}"
+                        class="block px-5 py-2 hover:bg-blue-100 text-gray-700">misión, visión y valores</a>
+                </div>
+            </div>
+
+
         </div>
 
         <div class="flex items-center space-x-4 mt-4 md:mt-0">

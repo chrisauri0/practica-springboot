@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>Conoce la mision, vision y valores</title>
+</head>
+
+<body>
+    <div th:insert="components/navbar :: navbar"></div>
+
+    <div class="container mx-auto px-4 py-8">
+
+        <h1 class="text-3xl font-bold mb-6">Misión, Visión y Valores</h1>
+
+        <div sec:authorize="hasRole('ADMIN')" class="mb-6">
+            <a href="/consola/mision-vision-valores/form"
+                class="inline-block px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-md shadow transition duration-200">
+                Editar valores
+            </a>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-2xl font-semibold mb-2">Misión</h2>
+            <p class="text-gray-700" th:text="${misionVisionValores.mision}">Aquí va la misión de la institución...</p>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-2xl font-semibold mb-2">Visión</h2>
+            <p class="text-gray-700" th:text="${misionVisionValores.vision}">Aquí va la visión de la institución...</p>
+        </div>
+        <div>
+            <h2 class="text-2xl font-semibold mb-2">Políticas</h2>
+            <p class="text-gray-700" th:text="${misionVisionValores.politica}">Aquí van las políticas de la
+                institución...</p>
+        </div>
+        <div>
+            <h2 class="text-2xl font-semibold mb-2">Objetivos SGE</h2>
+            <p class="text-gray-700" th:text="${misionVisionValores.objetivosSGE}">Aquí van los objetivos del SGE de la
+                institución...</p>
+        </div>
+
+        <div>
+            <h2 class="text-2xl font-semibold mb-2">Valores</h2>
+            <p class="text-gray-700" th:text="${misionVisionValores.valores}">Aquí van los valores de la institución...
+            </p>
+        </div>
+    </div>
+
+</body>
+
+</html>
